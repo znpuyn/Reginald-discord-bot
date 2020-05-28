@@ -64,59 +64,36 @@ First, let me ask you, what locationg are you from?
 1. Kinloch Park Middle
 2. Nautilus Middle
 3. NMB Library""")
-
-    if message.content.startswith("2"):
-        if server.roles[4] not in member_roles:
-            if server.roles[2 or 3] in member_roles:
-                await message.channel.send("You can only be enrolled in 1 location")
-            elif server.roles[2 or 3] not in member_roles:
-                await member.add_roles(server.roles[4], reason="user responded with 2", atomic = True)
-                await message.channel.send("I have added the appropriate tags to your user")
-        if server.roles[4] in member_roles:
-            await message.channel.send("You already have that tag")
-            
-    if message.content.startswith("1"):
+          
+    if message.content.startswith("1."):
         if server.roles[2] not in member_roles:
-            if server.roles[3 or 4] in member_roles:
+            if server.roles[3 or 5] in member_roles:
                 await message.channel.send("You can only be enrolled in 1 location")
-            if server.roles[3 or 4] not in member_roles:
-                await member.add_roles(server.roles[2], reason="user responded with 2", atomic = True)
-                await message.channel.send("I have added the appropriate tags to your user")
+            if server.roles[3 or 5] not in member_roles:
+                await member.add_roles(server.roles[2], reason="user responded that they attend Kinloch", atomic = True)
+                await message.channel.send("I have added the appropriate tag to your user")
         if server.roles[2] in member_roles:
             await message.channel.send("You already have that tag")
-            
 
-    if message.content.startswith("3"):
+
+    if message.content.startswith("2."):
+        if server.roles[5] not in member_roles:
+            if server.roles[2 or 3] in member_roles:
+                await message.channel.send("you can only be enrolled in 1 location")
+            if server.roles[2 or 3] not in member_roles:
+                await member.add_roles(server.roles[5], reason="user responded that they attend Nautilus", atomic = True)
+                await message.channel.send("I have added the appropriate tag to your user")
+                
+
+    if message.content.startswith("3."):
         if server.roles[3] not in member_roles:
-            if server.roles[2 or 4] in member_roles:
+            if server.roles[2 or 5] in member_roles:
                 await message.channel.send("You can only be enrolled in 1 location")
-            elif server.roles[2 or 4] not in member_roles:
-                await member.add_roles(server.roles[3], reason="user responded with 3", atomic = True)
-                await message.channel.send("I have added the appropriate tags to your user")
+            if server.roles[2 or 5] not in member_roles:
+                await member.add_roles(server.roles[3], reason="user responded that they attend NMB", atomic = True)
+                await message.channel.send("I have added the appropriate tag to your user")
         if server.roles[3] in member_roles:
             await message.channel.send("You already have that tag")
-            
-
-#    if message.content.startswith("$location 1"):
-#       if message.guild.roles[4] not in message.author.roles[1:]:
-#          await message.author.add_roles(message.guild.roles[4], reason="user responded with 1", atomic = True)
-#          await message.channel.send("I have added the appropriate tags to your user")
-#       if message.guild.roles[4] in message.author.roles[1:]:
-#          await message.channel.send("You already have that tag")
-
-#    if message.content.startswith("$location 2"):
-#        if message.guild.roles[2] not in message.author.roles[1:]:
-#            await message.author.add_roles(message.guild.roles[2], reason="user responded with 1", atomic = True)
-#            await message.channel.send("I have added the appropriate tags to your user")
-#        if message.guild.roles[2] in message.author.roles[1:]:
-#            await message.channel.send("You already have that tag")
-
-#    if message.content.startswith("$location 3"):
-#        if message.guild.roles[3] not in message.author.roles[1:]:
-#            await message.author.add_roles(message.guild.roles[3], reason="user responded with 1", atomic = True)
-#            await message.channel.send("I have added the appropriate tags to your user")
-#        if message.guild.roles[3] in message.author.roles[1:]:
-#            await message.channel.send("You already have that tag")
 
 
 #end of Location commands and replies_____________________________________________________________________________________________________________________________________________
