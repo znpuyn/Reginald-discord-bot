@@ -6,11 +6,6 @@ token = open("key.txt", "r")
 bot = commands.Bot(command_prefix='$')
 
 @bot.command()
-async def whatisserverrole (ctx, arg):
-    server = bot.get_guild (715077503948947500)
-    await ctx.send(f"{server.roles[int(arg)]}")
-
-@bot.command()
 async def locations(ctx, arg):
     server = bot.get_guild (715077503948947500)
     member = server.get_member(ctx.author.id)
@@ -77,12 +72,12 @@ async def students(ctx):
 
 @bot.command()
 async def dm(ctx):
-    await ctx.author.send (""""Hello I am the official AI Academy bot, Reginald!
-You might notice that the AI Academy discord is empty, but that's not the case. 
-First, let me ask you, what locationg are you from?
-1. Nautilus Middle 
-2. Kinloch Park Middle
-3. NMB Library""")
+    await ctx.author.send ("Hello I am the official AI Academy bot, Reginald!\n
+    "You might notice that the AI Academy discord is empty, but that's not the case. 
+    "First, let me ask you, what locationg are you from?\n
+    "1. Nautilus Middle \n
+    "2. Kinloch Park Middle\n
+    "3. NMB Library\n")
 
 @bot.command()
 async def roles(ctx): 
@@ -93,21 +88,6 @@ async def roles(ctx):
     for name in member_roles:
         role_names.append(name.name)
     await ctx.send(f'your roles are:\n```{role_names}```')
-
-@bot.command()
-async def guildroles(ctx):
-    server = bot.get_guild (715077503948947500)
-    member = server.get_member(ctx.author.id)
-    server_role_names = []
-    for name in server.roles[1:]:
-        server_role_names.append(name.name)
-    await ctx.send(f'{server_role_names}')
-
-#Location commands and responses_________________________________________________________________________________________________________________________________________________   
-
-          
-
-#end of Location commands and replies_____________________________________________________________________________________________________________________________________________
 
 @bot.event
 async def on_member_join(member):
