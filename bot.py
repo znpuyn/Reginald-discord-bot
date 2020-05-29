@@ -3,108 +3,119 @@ from discord.utils import get
 from discord.ext import commands
 
 token = open("key.txt", "r")
-client = discord.Client()
+bot = commands.Bot(command_prefix='$')
 
-@client.event
+@bot.command()
+async def whatisserverrole (ctx, arg):
+    server = bot.get_guild (715077503948947500)
+    await ctx.send(f"{server.roles[int(arg)]}")
+
+@bot.command()
+async def locations(ctx, arg):
+    server = bot.get_guild (715077503948947500)
+    member = server.get_member(ctx.author.id)
+    if arg == 'info':
+        await ctx.send("The following locations are available:\n 1. Kinloch Park Middle\n 2. Nautilus Middle\n 3. NMB Library")
+    if arg == "1":
+        for kp in member.roles[1:]:
+            if kp.name == "Nautilus" or "NMB Library":
+                await member.remove_roles(member.roles[1], reason='user attempted to enroll in multiple locations')
+                await ctx.send(f"You can't be enrolled in multiple locations")
+        await member.add_roles(server.roles[1], reason='user indicated they attend Kinloch Park', atomic = True)
+        await ctx.send(f"You are now enrolled at {server.roles[1]} {ctx.author.mention}")
+            
+    if arg == "2":
+        for naut in member.roles[1:]:
+            if naut.name == "Kinloch Park" or "NMB Library":
+                await member.remove_roles(member.roles[1], reason='user attempted to enroll in multiple locations')
+                await ctx.send(f"You can't be enrolled in multiple locations")
+        await member.add_roles(server.roles[2], reason='user indicated they attend Kinloch Park', atomic = True)
+        await ctx.send(f"You are now enrolled at {server.roles[2]} {ctx.author.mention}")
+
+    if arg == "3":
+        for nmb in member.roles[1:]:
+            if nmb.name == "Kinloch Park" or "Nautilus":
+                await ctx.send(f"You can't be enrolled in multiple locations")
+                await member.remove_roles(member.roles[1], reason='user attempted to enroll in multiple locations')
+        await member.add_roles(server.roles[3], reason='user indicated they attend Kinloch Park', atomic = True)
+        await ctx.send(f"You are now enrolled at {server.roles[3]} {ctx.author.mention}")
+
+    if arg == 'purge':
+        for n in member.roles[1:]:
+            if n.name == "Kinloch Park" or n.name == "Nautilus"or n.name =="NMB Library":
+                await member.remove_roles(member.roles[1], reason ='user requested a purge of location tags')
+        await ctx.send(f"Purge completed")
+
+@bot.event
 async def on_connect():
-    print ('I have successfully logged in as {0.user}'.format(client))
+    print ('I have successfully logged in as {0.user}'.format(bot))
 
-@client.event 
+
+@bot.event 
 async def on_disconnect():
     print ("I have lost connection, please troubleshoot")
 
-@client.event
+
+@bot.event
 async def on_ready():
-    server = client.get_guild (715077503948947500)
-    print ('I have fully initialized as {0.user}'.format(client))
+    server = bot.get_guild (715077503948947500)
+    print ('I have fully initialized as {0.user}'.format(bot))
     print ('joined '+ str(server))
 
-@client.event
-async def on_message(message):
-    server = client.get_guild (715077503948947500) #needs to be somewhere where the bot has already initialized if not it returns none. 
-    member = server.get_member(message.author.id)
-    member_roles = member.roles[1:]
-    role_names = []
-    for name in member_roles:
-        role_names.append(name.name)
-    
-    server_role_names = []
-    for name in server.roles[1:]:
-        server_role_names.append(name.name)
+@bot.command()
+async def hello(ctx):
+    await ctx.send(f"Hello there {ctx.author.name}")
 
-    if message.author == client.user:
-        return
+@bot.command()
+async def students(ctx):
+    server = bot.get_guild (715077503948947500)
+    x = server.roles[4].members
+    students = []
+    for count in x:
+        students.append(count.name)
+    await ctx.send(f" AI Academy currently has:```{len(students)} students```")
 
-
-    if message.content.startswith('$hello'):
-        await message.channel.send(f"Hello there {message.author.name}")
-
-
-    if message.content.startswith('$students'):
-        x = message.guild.roles[1].members
-        students = []
-        for count in x:
-            students.append(count.name)
-        await message.channel.send(f" AI Academy currently has:```{len(students)}```")
-
-
-    if message.content.startswith('$dm'):
-        await message.author.send (""""Hello I am the official AI Academy bot, Reginald!
+@bot.command()
+async def dm(ctx):
+    await ctx.author.send (""""Hello I am the official AI Academy bot, Reginald!
 You might notice that the AI Academy discord is empty, but that's not the case. 
 First, let me ask you, what locationg are you from?
 1. Nautilus Middle 
 2. Kinloch Park Middle
 3. NMB Library""")
 
+@bot.command()
+async def roles(ctx): 
+    server = bot.get_guild (715077503948947500)
+    member = server.get_member(ctx.author.id)
+    member_roles = member.roles[1:]
+    role_names = []
+    for name in member_roles:
+        role_names.append(name.name)
+    await ctx.send(f'your roles are:\n```{role_names}```')
 
-    if message.content.startswith('$roles'):
-        await message.channel.send(f'your roles are:\n```{role_names}```')
-
-    if message.content.startswith('$guildroles'):
-        await message.channel.send(f'{server_role_names}')
+@bot.command()
+async def guildroles(ctx):
+    server = bot.get_guild (715077503948947500)
+    member = server.get_member(ctx.author.id)
+    server_role_names = []
+    for name in server.roles[1:]:
+        server_role_names.append(name.name)
+    await ctx.send(f'{server_role_names}')
 
 #Location commands and responses_________________________________________________________________________________________________________________________________________________   
 
-    if message.content.startswith('$locations'):
-        await message.channel.send(
-"""The following locations are available:
-1. Kinloch Park Middle
-2. Nautilus Middle
-3. NMB Library""")
           
-    if message.content.startswith("1."):
-        if server.roles[1] not in member_roles and server.roles[2 or 3] not in member_roles:
-            await member.add_roles(server.roles[1], reason="user responded that they attend Kinloch", atomic = True)
-            await message.channel.send("I have added the appropriate tag to your user")
-        if server.roles[1] in member_roles:
-            await message.channel.send("You already have that tag")
-
-
-    if message.content.startswith("2."):
-        if server.roles[2] not in member_roles and server.roles[1 or 3] not in member_roles:
-            await member.add_roles(server.roles[2], reason="user responded that they attend Nautilus", atomic = True)
-            await message.channel.send("I have added the appropriate tag to your user")
-        if server.roles[2] in member_roles:
-            await message.channel.send("You already have that tag")
-
-    if message.content.startswith("3."):
-        if server.roles[3] not in member_roles and server.roles[1 or 2] not in member_roles:
-            await member.add_roles(server.roles[3], reason="user responded that they attend NMB", atomic = True)
-            await message.channel.send("I have added the appropriate tag to your user")
-        if server.roles[3] in member_roles:
-            await message.channel.send("You already have that tag")
-
 
 #end of Location commands and replies_____________________________________________________________________________________________________________________________________________
 
-
-@client.event
+@bot.event
 async def on_member_join(member):
-    await member.send("""Hello I am the official AI Academy bot, Reginald!
-    You might notice that the AI Academy discord is empty, but that's not the case. 
-    First, let me ask you, what locationg are you from?
-    1. Nautilus Middle 
-    2. Kinloch Park Middle
-    3. NMB Library""")
+    await member.send("Hello I am the official AI Academy bot, Reginald!\n"
+    "You might notice that the AI Academy discord is empty, but that's not the case.\n" 
+    "First, let me ask you, what locationg are you from?\n"
+    "1. Nautilus Middle\n" 
+    "2. Kinloch Park Middle\n"
+    "3. NMB Library\n")
 
-client.run(token.read())
+bot.run(token.read())
