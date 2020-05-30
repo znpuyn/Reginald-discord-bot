@@ -5,6 +5,81 @@ from discord.ext import commands
 token = open("key.txt", "r")
 bot = commands.Bot(command_prefix='$')
 
+#Start of events======================================================================================
+
+@bot.event
+async def on_connect():
+    print ('I have successfully logged in as {0.user}'.format(bot))
+
+
+@bot.event 
+async def on_disconnect():
+    print ("I have lost connection, please troubleshoot")
+
+
+@bot.event
+async def on_ready():
+    server = bot.get_guild (715077503948947500)
+    print ('I have fully initialized as {0.user}'.format(bot))
+    print ('joined '+ str(server))
+
+@bot.event
+async def on_member_join(member):
+    await member.send("Hello I am the official AI Academy bot, Reginald!\n"
+    "You might notice that the AI Academy discord is empty, but that's not the case.\n" 
+    "First, let me ask you, what locationg are you from?\n"
+    "1. Nautilus Middle\n" 
+    "2. Kinloch Park Middle\n"
+    "3. NMB Library\n")
+    await member.send("In addition, please be sure to read the wiki for my commands prior to calling me at:\n"
+    "```[link to wiki]")
+
+#End of events=========================================================================================
+#Start of commands=====================================================================================
+
+@bot.command()
+async def commands(ctx):
+    await ctx.send("A list of my commands can be found on my wiki: ```[Link will go here]```")
+
+@bot.command()
+async def TAs(ctx):
+    server = bot.get_guild(715077503948947500)
+    await ctx.send("Of the following TAs:")
+    async with ctx.typing():
+        for name in server.roles[6].members:
+            await ctx.send(f"```{name.name}```")
+    await ctx.send("These are the ones that are online:")
+    async with ctx.typing():
+        for TA in server.roles[6].members:
+            if f'{TA.status}' == 'online':
+                await ctx.send(f"```{TA.name}```")
+
+@bot.command()
+async def staff(ctx):
+    server = bot.get_guild (715077503948947500)  
+      
+    await ctx.send("I'll notify one of the TAs to assign this role to you. Unfortunately it's for the best that I don't assign staff roles out like they were candy without some verification")
+    await ctx.send(f'{ctx.author} is requesting to be designed as staff')
+    for TA in server.roles[6].members:
+        if f'{TA.status}' == 'online':
+            await ctx.send(f'{TA.mention}')
+
+@bot.command()
+async def student(ctx):
+    server = bot.get_guild (715077503948947500)
+    member = server.get_member(ctx.author.id)
+    await member.add_roles(server.roles[4], reason = 'user indicated they were a student', atomic = True)
+    await ctx.send("You are now tagged as a student")
+        
+@bot.command()
+async def password(ctx):
+    await ctx.send(f"I will notify one of our TAs that you need assistance with your password for {arg}")
+    server = bot.get_guild (715077503948947500)
+    for name in server.roles[6].members: 
+        if f'{name.status}' == 'online': 
+            TA = bot.get_user(name.id)
+    await TA.send(f"{ctx.author} requires assistance with their password for {arg}.")
+
 @bot.command()
 async def locations(ctx, arg):
     server = bot.get_guild (715077503948947500)
@@ -41,22 +116,6 @@ async def locations(ctx, arg):
                 await member.remove_roles(member.roles[1], reason ='user requested a purge of location tags')
         await ctx.send(f"Purge completed")
 
-@bot.event
-async def on_connect():
-    print ('I have successfully logged in as {0.user}'.format(bot))
-
-
-@bot.event 
-async def on_disconnect():
-    print ("I have lost connection, please troubleshoot")
-
-
-@bot.event
-async def on_ready():
-    server = bot.get_guild (715077503948947500)
-    print ('I have fully initialized as {0.user}'.format(bot))
-    print ('joined '+ str(server))
-
 @bot.command()
 async def hello(ctx):
     await ctx.send(f"Hello there {ctx.author.name}")
@@ -65,37 +124,16 @@ async def hello(ctx):
 async def students(ctx):
     server = bot.get_guild (715077503948947500)
     x = server.roles[4].members
-    students = []
-    for count in x:
-        students.append(count.name)
-    await ctx.send(f" AI Academy currently has:```{len(students)} students```")
-
-@bot.command()
-async def dm(ctx):
-    await ctx.author.send ("Hello I am the official AI Academy bot, Reginald!\n
-    "You might notice that the AI Academy discord is empty, but that's not the case. 
-    "First, let me ask you, what locationg are you from?\n
-    "1. Nautilus Middle \n
-    "2. Kinloch Park Middle\n
-    "3. NMB Library\n")
+    await ctx.send(f" AI Academy currently has:```{len(x)} students```")
 
 @bot.command()
 async def roles(ctx): 
     server = bot.get_guild (715077503948947500)
     member = server.get_member(ctx.author.id)
     member_roles = member.roles[1:]
-    role_names = []
     for name in member_roles:
-        role_names.append(name.name)
-    await ctx.send(f'your roles are:\n```{role_names}```')
+        await ctx.send(f'```{name.name}```')
 
-@bot.event
-async def on_member_join(member):
-    await member.send("Hello I am the official AI Academy bot, Reginald!\n"
-    "You might notice that the AI Academy discord is empty, but that's not the case.\n" 
-    "First, let me ask you, what locationg are you from?\n"
-    "1. Nautilus Middle\n" 
-    "2. Kinloch Park Middle\n"
-    "3. NMB Library\n")
+#End of commands=============================================================================================================
 
 bot.run(token.read())
