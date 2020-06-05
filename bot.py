@@ -5,7 +5,7 @@ from discord.ext import commands
 token = open("key.txt", "r")
 bot = commands.Bot(command_prefix='$')
 
-#Start of events======================================================================================
+#Start of events==========================================================================================
 
 @bot.event
 async def on_connect():
@@ -32,7 +32,7 @@ async def on_member_join(member):
     "2. Kinloch Park Middle\n"
     "3. NMB Library\n")
     await member.send("In addition, please be sure to read the wiki for my commands prior to calling me at:\n"
-    "```[link to wiki]")
+    "```[link to wiki]```")
 
 #End of events=========================================================================================
 #Start of commands=====================================================================================
@@ -43,30 +43,25 @@ async def commands(ctx):
 
 @bot.command()
 async def TAs(ctx):
-    server = bot.get_guild(715077503948947500)
-    await ctx.send("Of the following TAs:")
+    server = bot.get_guild(ctx.guild.id)
+    await ctx.send("The following TAs are online:")
     async with ctx.typing():
-        for name in server.roles[6].members:
-            await ctx.send(f"```{name.name}```")
-    await ctx.send("These are the ones that are online:")
-    async with ctx.typing():
-        for TA in server.roles[6].members:
+        for TA in server.roles[9].members:
             if f'{TA.status}' == 'online':
-                await ctx.send(f"```{TA.name}```")
+                await ctx.send(f'```{TA.display_name}```')
 
 @bot.command()
 async def staff(ctx):
-    server = bot.get_guild (715077503948947500)  
-      
+    server = bot.get_guild (ctx.guild.id)  
     await ctx.send("I'll notify one of the TAs to assign this role to you. Unfortunately it's for the best that I don't assign staff roles out like they were candy without some verification")
     await ctx.send(f'{ctx.author} is requesting to be designed as staff')
-    for TA in server.roles[6].members:
+    for TA in server.roles[9].members:
         if f'{TA.status}' == 'online':
             await ctx.send(f'{TA.mention}')
 
 @bot.command()
 async def student(ctx):
-    server = bot.get_guild (715077503948947500)
+    server = bot.get_guild (ctx.guild.id)
     member = server.get_member(ctx.author.id)
     await member.add_roles(server.roles[4], reason = 'user indicated they were a student', atomic = True)
     await ctx.send("You are now tagged as a student")
@@ -74,15 +69,15 @@ async def student(ctx):
 @bot.command()
 async def password(ctx):
     await ctx.send(f"I will notify one of our TAs that you need assistance with your password for {arg}")
-    server = bot.get_guild (715077503948947500)
-    for name in server.roles[6].members: 
+    server = bot.get_guild (ctx.guild.id)
+    for name in server.roles[9].members: 
         if f'{name.status}' == 'online': 
             TA = bot.get_user(name.id)
     await TA.send(f"{ctx.author} requires assistance with their password for {arg}.")
 
 @bot.command()
 async def locations(ctx, arg):
-    server = bot.get_guild (715077503948947500)
+    server = bot.get_guild (ctx.guild.id)
     member = server.get_member(ctx.author.id)
     if arg == 'info':
         await ctx.send("The following locations are available:\n 1. Kinloch Park Middle\n 2. Nautilus Middle\n 3. NMB Library")
@@ -122,13 +117,13 @@ async def hello(ctx):
 
 @bot.command()
 async def students(ctx):
-    server = bot.get_guild (715077503948947500)
+    server = bot.get_guild (ctx.guild.id)
     x = server.roles[4].members
     await ctx.send(f" AI Academy currently has:```{len(x)} students```")
 
 @bot.command()
 async def roles(ctx): 
-    server = bot.get_guild (715077503948947500)
+    server = bot.get_guild (ctx.guild.id)
     member = server.get_member(ctx.author.id)
     member_roles = member.roles[1:]
     for name in member_roles:
