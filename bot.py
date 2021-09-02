@@ -205,6 +205,10 @@ async def purge(ctx, arg):
     if author_is_op == 0:
         await ctx.send(f"You don't have the right permissions for that")
 
+@bot.command()
+async def wiki(ctx):
+    await ctx.send(f"My wiki can be found at this URL: https://github.com/znpuyn/Reginald-discord-bot/wiki")
+
 
 
 
