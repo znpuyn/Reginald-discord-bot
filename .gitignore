@@ -2,3 +2,6 @@ example_bot.py
 .bot-env
 key.txt
 .idea
+.reginald_bot
+.vs-code
+.vscode

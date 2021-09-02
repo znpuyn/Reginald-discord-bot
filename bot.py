@@ -1,9 +1,12 @@
+import logging
 import discord 
 from discord.utils import get
 from discord.ext import commands
+intents = discord.Intents.all()
+intents.members = True
 
 token = open("key.txt", "r")
-bot = commands.Bot(command_prefix='$')
+bot = commands.Bot(command_prefix='$', intents=intents)
 
 #Start of events==========================================================================================
 
@@ -46,7 +49,14 @@ async def TAs(ctx):
     server = bot.get_guild(ctx.guild.id)
     await ctx.send("The following TAs are online:")
     async with ctx.typing():
-        for TA in server.roles[9].members:
+        TA_position = 0
+        for x in server.roles:
+            if x.id == 692130820411883601:
+                break
+            if x != 692130820411883601:
+                TA_position += 1
+        
+        for TA in server.roles[TA_position].members:
             if f'{TA.status}' == 'online':
                 await ctx.send(f'```{TA.display_name}```')
 
@@ -55,7 +65,13 @@ async def staff(ctx):
     server = bot.get_guild (ctx.guild.id)  
     await ctx.send("I'll notify one of the TAs to assign this role to you. Unfortunately it's for the best that I don't assign staff roles out like they were candy without some verification")
     await ctx.send(f'{ctx.author} is requesting to be designed as staff')
-    for TA in server.roles[9].members:
+    TA_position = 0
+    for x in server.roles:
+        if x.id == 692130820411883601:
+                break
+        if x != 692130820411883601:
+                TA_position += 1
+    for TA in server.roles[TA_position].members:
         if f'{TA.status}' == 'online':
             await ctx.send(f'{TA.mention}')
 
@@ -63,14 +79,27 @@ async def staff(ctx):
 async def student(ctx):
     server = bot.get_guild (ctx.guild.id)
     member = server.get_member(ctx.author.id)
-    await member.add_roles(server.roles[4], reason = 'user indicated they were a student', atomic = True)
+    student_position = 0
+    for x in server.roles:
+        if x.id == 692130778582089878:
+                break
+        if x != 692130778582089878:
+                student_position += 1
+    await member.add_roles(server.roles[student_position], reason = 'user indicated they were a student', atomic = True)
     await ctx.send("You are now tagged as a student")
         
 @bot.command()
 async def password(ctx):
     await ctx.send(f"I will notify one of our TAs that you need assistance with your password for {arg}")
     server = bot.get_guild (ctx.guild.id)
-    for name in server.roles[9].members: 
+    TA_position = 0
+    for x in server.roles:
+        if x.id == 692130820411883601:
+                break
+        if x != 692130820411883601:
+                TA_position += 1
+
+    for name in server.roles[TA_position].members: 
         if f'{name.status}' == 'online': 
             TA = bot.get_user(name.id)
     await TA.send(f"{ctx.author} requires assistance with their password for {arg}.")
@@ -110,6 +139,8 @@ async def locations(ctx, arg):
             if n.name == "Kinloch Park" or n.name == "Nautilus"or n.name =="NMB Library":
                 await member.remove_roles(member.roles[1], reason ='user requested a purge of location tags')
         await ctx.send(f"Purge completed")
+    else:
+        print("I'm sorry, you forgot to provide an argument so I can't provide assistance. Please refer to my wiki on what arguments to use. To see my wiki use the $wiki command and follow the link provided.3")
 
 @bot.command()
 async def hello(ctx):
@@ -118,7 +149,14 @@ async def hello(ctx):
 @bot.command()
 async def students(ctx):
     server = bot.get_guild (ctx.guild.id)
-    x = server.roles[4].members
+    student_role = 0
+    for x in  server.roles:
+        if x.id == 692130778582089878:
+            break
+        if x.id != 692130778582089878:
+            student_role += 1
+        
+    x = server.roles[student_role].members
     await ctx.send(f" AI Academy currently has:```{len(x)} students```")
 
 @bot.command()
@@ -129,6 +167,48 @@ async def roles(ctx):
     for name in member_roles:
         await ctx.send(f'```{name.name}```')
 
+@bot.command()
+async def purge(ctx, arg):
+    server = bot.get_guild (ctx.guild.id)
+    ops = 0
+    for x in server.roles:
+        if x.id == 692131193151291412:
+                break
+        if x.id != 692131193151291412:
+                ops += 1
+    ops_list = server.roles[ops].members
+    print (ops_list)
+    author_is_op = 0
+    for x in ops_list:
+        if ctx.author == x:
+            author_is_op = 1
+    
+    if author_is_op == 1:
+        if arg == ("server"):
+            await ctx.send(f"ok purging the discord now. please wait a moment")
+
+            #purge code, possbibly unstable until live tested. 
+            student_role = 0
+            for x in  server.roles:
+                if x.id == 692130778582089878:
+                     break
+                if x.id != 692130778582089878:
+                    student_role += 1
+            students = server.roles[student_role].members
+            num_kicked = 0
+            num_kicked += len(students)
+            for x in students:
+                await server.kick (x, reason="Program has ended for the year")
+            await ctx.send(f"The purge is complete, all users with " + (server.roles[student_role].name) + " have been purged from the discord.")
+            await ctx.send(f"That's "+str(num_kicked)+" students removed from this server.")
+            
+    if author_is_op == 0:
+        await ctx.send(f"You don't have the right permissions for that")
+
+
+
+
 #End of commands=============================================================================================================
 
+logging.basicConfig(level=logging.INFO)
 bot.run(token.read())
