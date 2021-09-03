@@ -22,27 +22,24 @@ async def on_disconnect():
 
 @bot.event
 async def on_ready():
-    server = bot.get_guild (715077503948947500)
+    server = bot.get_guild (692127526071566387)
     print ('I have fully initialized as {0.user}'.format(bot))
     print ('joined '+ str(server))
 
 @bot.event
 async def on_member_join(member):
     await member.send("Hello I am the official AI Academy bot, Reginald!\n"
-    "You might notice that the AI Academy discord is empty, but that's not the case.\n" 
-    "First, let me ask you, what locationg are you from?\n"
-    "1. Nautilus Middle\n" 
-    "2. Kinloch Park Middle\n"
-    "3. NMB Library\n")
-    await member.send("In addition, please be sure to read the wiki for my commands prior to calling me at:\n"
-    "```[link to wiki]```")
+    "You might notice that the AI Academy discord is empty, but that's not the case. The channels are hidden and require specific tags to see\n" 
+    await member.send("please be sure to read the wiki for my commands prior to requesting assistance from the TAs:\n"
+    "```[https://github.com/znpuyn/Reginald-discord-bot/wiki]```\n"
+    "I accept commands in all text channels that you can type into so do not worry about channel specific restrictions place onto myself")
 
 #End of events=========================================================================================
 #Start of commands=====================================================================================
 
 @bot.command()
 async def commands(ctx):
-    await ctx.send("A list of my commands can be found on my wiki: ```[Link will go here]```")
+    await ctx.send("A list of my commands can be found on my wiki: ```[https://github.com/znpuyn/Reginald-discord-bot/wiki/Commands]```")
 
 @bot.command()
 async def TAs(ctx):
@@ -89,7 +86,7 @@ async def student(ctx):
     await ctx.send("You are now tagged as a student")
         
 @bot.command()
-async def password(ctx):
+async def password(ctx, arg):
     await ctx.send(f"I will notify one of our TAs that you need assistance with your password for {arg}")
     server = bot.get_guild (ctx.guild.id)
     TA_position = 0
